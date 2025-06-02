@@ -37,17 +37,19 @@ class GitHubSearchControllerTest {
 
     @Test
     void returnsScoredRepositoriesForValidRequest() throws Exception {
-        var request = new GitHubSearchRequest("java", Instant.now().minusSeconds(3600));
+        var request = new GitHubSearchRequest("java", Instant.now().minusSeconds(3600), 1, 10);
         var mockResults = List.of(
                 new ScoredRepository("repo1", "http://repo1", 100L, 10L, 95L),
                 new ScoredRepository("repo2", "http://repo2", 90L, 5L, 90L)
         );
-        when(searchService.searchAndScoreRepositories(request.language(), request.earliestCreationDate()))
+        when(searchService.searchAndScoreRepositories(request.language(), request.earliestCreationDate(), request.page(), request.perPage()))
                 .thenReturn(mockResults);
 
         mockMvc.perform(get("/api/scored-search")
                         .param("language", "java")
                         .param("earliestCreationDate", request.earliestCreationDate().toString())
+                        .param("page", request.page().toString())
+                        .param("perPage", request.perPage().toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -57,13 +59,15 @@ class GitHubSearchControllerTest {
 
     @Test
     void returnsEmptyListForNoMatchingRepositories() throws Exception {
-        var request = new GitHubSearchRequest("nonexistent-language", Instant.now().minusSeconds(3600));
-        when(searchService.searchAndScoreRepositories(request.language(), request.earliestCreationDate()))
+        var request = new GitHubSearchRequest("nonexistent-language", Instant.now().minusSeconds(3600), 1, 1);
+        when(searchService.searchAndScoreRepositories(request.language(), request.earliestCreationDate(), request.page(), request.perPage()))
                 .thenReturn(List.of());
 
         mockMvc.perform(get("/api/scored-search")
                         .param("language", "nonexistent-language")
                         .param("earliestCreationDate", request.earliestCreationDate().toString())
+                        .param("page", request.page().toString())
+                        .param("perPage", request.perPage().toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
@@ -79,13 +83,15 @@ class GitHubSearchControllerTest {
 
     @Test
     void returnsErrorMessageWhenGithubExceptionThrown() throws Exception {
-        var request = new GitHubSearchRequest("java", Instant.now().minusSeconds(3600));
-        when(searchService.searchAndScoreRepositories(request.language(), request.earliestCreationDate()))
+        var request = new GitHubSearchRequest("java", Instant.now().minusSeconds(3600), 1, 1);
+        when(searchService.searchAndScoreRepositories(request.language(), request.earliestCreationDate(), request.page(), request.perPage()))
                 .thenThrow(new GithubException("GitHubException"));
 
         mockMvc.perform(get("/api/scored-search")
                         .param("language", "java")
                         .param("earliestCreationDate", request.earliestCreationDate().toString())
+                        .param("page", request.page().toString())
+                        .param("perPage", request.perPage().toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

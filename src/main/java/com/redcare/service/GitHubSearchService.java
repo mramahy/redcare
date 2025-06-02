@@ -19,9 +19,9 @@ public class GitHubSearchService {
         this.gitHubWebClient = gitHubWebClient;
     }
 
-    public List<ScoredRepository>  searchAndScoreRepositories(String q, Instant earliestCreationDate) {
+    public List<ScoredRepository>  searchAndScoreRepositories(String q, Instant earliestCreationDate, Integer page, Integer perPage) {
         var gitHubRepositories =
-                gitHubWebClient.searchRepositories(q, earliestCreationDate).items();
+                gitHubWebClient.searchRepositories(q, earliestCreationDate, page, perPage).items();
         return gitHubRepositories.stream().map(
                 githubRepository -> new ScoredRepository(
                         githubRepository.name(),

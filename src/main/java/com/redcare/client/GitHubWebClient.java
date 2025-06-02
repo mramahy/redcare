@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
+import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.*;
 
 
@@ -23,7 +24,7 @@ public class GitHubWebClient {
     private static final Logger log = LoggerFactory.getLogger(GitHubWebClient.class);
 
     private static final String BASE_URL = "https://api.github.com/search/repositories";
-    private static final String QUERY_TEMPLATE = "?q=language:%s+created:>=%s&sort=stars&order=desc";
+    private static final String QUERY_TEMPLATE = "?q=language:%s+created:>=%s&sort=stars&order=desc&page=%s&per_page=%s";
 
     private final RestTemplate restTemplate;
 
@@ -31,8 +32,8 @@ public class GitHubWebClient {
         this.restTemplate = restTemplate;
     }
 
-    public GitHubSearchResponse searchRepositories(String language, Instant earliestCreationDate) {
-        String query = String.format(QUERY_TEMPLATE, language, formatDate(earliestCreationDate));
+    public GitHubSearchResponse searchRepositories(String language, Instant earliestCreationDate, Integer page, Integer perPage) {
+        String query = format(QUERY_TEMPLATE, language, formatDate(earliestCreationDate), page, perPage);
         String url = BASE_URL + query;
         try{
             log.info("Calling GitHub API: {}", url);

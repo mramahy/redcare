@@ -33,10 +33,10 @@ class GitHubSearchServiceTest {
                 new GitHubRepository("repo1", "http://repo1", 100L, 10L, now.minusSeconds(3600), now.minusSeconds(1800)),
                 new GitHubRepository("repo2", "http://repo2", 90L, 5L, now.minusSeconds(7200), now.minusSeconds(3600))
         );
-        when(gitHubWebClient.searchRepositories("java", now.minusSeconds(3600)))
+        when(gitHubWebClient.searchRepositories("java", now.minusSeconds(3600), 1, 1))
                 .thenReturn(new GitHubSearchResponse(repositories));
 
-        var result = gitHubSearchService.searchAndScoreRepositories("java", now.minusSeconds(3600));
+        var result = gitHubSearchService.searchAndScoreRepositories("java", now.minusSeconds(3600), 1, 1);
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).name()).isEqualTo("repo1");
@@ -46,11 +46,11 @@ class GitHubSearchServiceTest {
     @Test
     void returnsEmptyListWhenNoRepositoriesFound() {
         Instant now = now();
-        when(gitHubWebClient.searchRepositories("nonexistent", now))
+        when(gitHubWebClient.searchRepositories("nonexistent", now, 1, 1))
                 .thenReturn(new GitHubSearchResponse(List.of()));
 
         var result = gitHubSearchService.searchAndScoreRepositories("nonexistent",
-                now);
+                now, 1, 1);
 
         assertThat(result).isEmpty();
     }
@@ -60,10 +60,10 @@ class GitHubSearchServiceTest {
         Instant now = now();
         var repository = new GitHubRepository("repo1", "http://repo1", 100L, 10L,
                 now.minus(1, DAYS), now.minus(1, DAYS));
-        when(gitHubWebClient.searchRepositories("java", now))
+        when(gitHubWebClient.searchRepositories("java", now, 1, 1))
                 .thenReturn(new GitHubSearchResponse(List.of(repository)));
 
-        var result = gitHubSearchService.searchAndScoreRepositories("java", now);
+        var result = gitHubSearchService.searchAndScoreRepositories("java", now, 1, 1);
 
         assertThat(result.getFirst().score()).isEqualTo(100 + 10 - 1);
     }
@@ -72,10 +72,10 @@ class GitHubSearchServiceTest {
     void handlesRepositoriesWithNoUpdatesGracefully() {
         Instant now = now();
         var repository = new GitHubRepository("repo1", "http://repo1", 100L, 10L, null, now());
-        when(gitHubWebClient.searchRepositories("java", now))
+        when(gitHubWebClient.searchRepositories("java", now, 1, 1))
                 .thenReturn(new GitHubSearchResponse(List.of(repository)));
 
-        var result = gitHubSearchService.searchAndScoreRepositories("java", now);
+        var result = gitHubSearchService.searchAndScoreRepositories("java", now, 1, 1);
 
         assertThat(result.getFirst().score()).isEqualTo(100 + 10);
     }

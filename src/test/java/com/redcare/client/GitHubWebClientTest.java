@@ -36,7 +36,7 @@ class GitHubWebClientTest {
         when(restTemplate.getForEntity(anyString(), eq(GitHubSearchResponse.class)))
                 .thenReturn(responseEntity);
 
-        GitHubSearchResponse result = gitHubWebClient.searchRepositories("java", Instant.now());
+        GitHubSearchResponse result = gitHubWebClient.searchRepositories("java", Instant.now(), 1, 1);
         assertEquals(mockResponse, result);
     }
 
@@ -54,7 +54,7 @@ class GitHubWebClientTest {
                 .thenThrow(exception);
 
         assertThrows(GithubException.class, () ->
-                gitHubWebClient.searchRepositories("java", Instant.now()));
+                gitHubWebClient.searchRepositories("java", Instant.now(), 1, 1));
     }
 
     @Test
@@ -71,7 +71,7 @@ class GitHubWebClientTest {
                 .thenThrow(exception);
 
         assertThrows(GithubException.class, () ->
-                gitHubWebClient.searchRepositories("java", Instant.now()));
+                gitHubWebClient.searchRepositories("java", Instant.now(), 1, 1));
     }
 
     @Test
@@ -88,7 +88,7 @@ class GitHubWebClientTest {
                 .thenThrow(exception);
 
         assertThrows(GithubException.class, () ->
-                gitHubWebClient.searchRepositories("java", Instant.now()));
+                gitHubWebClient.searchRepositories("java", Instant.now(), 1, 1));
     }
 
     @Test
@@ -98,6 +98,6 @@ class GitHubWebClientTest {
                 .thenThrow(new RuntimeException());
 
         assertThrows(GithubException.class, () ->
-                gitHubWebClient.searchRepositories("java", Instant.now()));
+                gitHubWebClient.searchRepositories("java", Instant.now(), 1, 1));
     }
 }

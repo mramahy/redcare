@@ -11,14 +11,14 @@ import java.time.temporal.ChronoUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class GitHubWebClientRealIntegrationTest {
+class GitHubWebClientIntegrationTest {
 
     @Autowired
     private GitHubWebClient client;
 
     @Test
     void returnsRepositoriesForValidQuery() {
-        var result = client.searchRepositories("java", Instant.ofEpochMilli(1577836800000L));
+        var result = client.searchRepositories("java", Instant.ofEpochMilli(1577836800000L), 1, 10);
 
         assertNotNull(result);
         assertFalse(result.items().isEmpty());
@@ -27,7 +27,7 @@ class GitHubWebClientRealIntegrationTest {
     @Test
     void returnsEmptyListForNonsenseQuery() {
         var result = client.searchRepositories("java",
-                Instant.now().plus(1, ChronoUnit.DAYS));
+                Instant.now().plus(1, ChronoUnit.DAYS), 1, 10);
 
         assertNotNull(result);
         assertTrue(result.items().isEmpty());
@@ -36,6 +36,6 @@ class GitHubWebClientRealIntegrationTest {
     @Test
     void returnsErrorNonsenseQuery() {
         assertThrows(GithubException.class, ()-> client.searchRepositories("asd435asda$#%ads",
-                Instant.now().plus(1, ChronoUnit.DAYS)));
+                Instant.now().plus(1, ChronoUnit.DAYS), 1, 1));
     }
 }

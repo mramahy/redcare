@@ -23,9 +23,11 @@ public class GitHubSearchController {
     @GetMapping("/api/scored-search")
     public ResponseEntity<List<ScoredRepository>> getScoredRepos(@Valid @ModelAttribute GitHubSearchRequest request) {
 
-        var repositoryResults =
-                searchService.searchAndScoreRepositories(request.language(),
-                        request.earliestCreationDate());
+        var repositoryResults = searchService.searchAndScoreRepositories(
+                request.language(),
+                request.earliestCreationDate(),
+                request.page(),
+                request.perPage());
 
         return ResponseEntity.ok(repositoryResults);
     }
