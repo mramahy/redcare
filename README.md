@@ -4,6 +4,15 @@ This project is a Spring Boot backend service designed to search GitHub reposito
 
 ---
 
+## Requirements
+
+- Develop a scoring algorithm that assigns a popularity score to each repository.
+- Factors contributing to the score:
+  - Number of stars
+  - Number of forks
+  - Recency of updates
+- the user should be able to configure the earliest created date and language of repositories.
+  
 ## What is this project about?
 
 The application exposes a REST API that:
@@ -54,3 +63,32 @@ Open terminal on project then:
 ```docker build -t redcare-api . ```
 
 ```docker run -p 8080:8080 redcare-api ```
+
+## 📡 API Usage
+
+### GET `/api/scored-search`
+
+**Query Parameters:**
+
+| Name                   | Type        | Required | Description                          |
+|------------------------|-------------|----------|--------------------------------------|
+| `language`             | String      | ✅ Yes    | Programming language (e.g. `java`)   |
+| `earliestCreationDate` | ISO Instant | ✅ Yes    | Repositories created after this date |
+| `page`                 | Integer     | ✅ Yes    | number of page                       |
+| `perPage`              | Integer     | ✅ Yes    | number of items per page             |
+**Example:**
+
+```GET``` GET http://localhost:8080/api/scored-search?language=java&earliestCreationDate=2020-03-01T00:00:00Z&page=2&perPage=10
+
+**Response:**
+```json
+[
+  {
+    "name": "awesome-java-lib",
+    "url": "https://github.com/awesome/awesome-java-lib",
+    "stars": 1234,
+    "forks": 432,
+    "score": 1600
+  }
+]
+```
