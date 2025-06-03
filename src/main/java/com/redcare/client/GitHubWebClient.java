@@ -18,7 +18,10 @@ import java.util.Date;
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.*;
 
-
+/**
+ * GitHubWebClient is a Spring component responsible for interacting with the GitHub API.
+ * It provides methods to search for repositories based on language, creation date, and pagination parameters.
+ */
 @Component
 public class GitHubWebClient {
     private static final Logger log = LoggerFactory.getLogger(GitHubWebClient.class);
@@ -28,17 +31,34 @@ public class GitHubWebClient {
 
     private final RestTemplate restTemplate;
 
+    /**
+     * Constructor for GitHubWebClient.
+     *
+     * @param restTemplate the RestTemplate instance used for making HTTP requests
+     */
     public GitHubWebClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * Searches GitHub repositories based on the specified programming language, earliest creation date, and pagination parameters.
+     *
+     * @param language the programming language to filter repositories by
+     * @param earliestCreationDate the earliest creation date for repositories
+     * @param page the page number for pagination
+     * @param perPage the number of results per page
+     * @return a GitHubSearchResponse containing the search results
+     * @throws GithubException if an error occurs while calling the GitHub API
+     */
     public GitHubSearchResponse searchRepositories(String language, Instant earliestCreationDate, Integer page, Integer perPage) {
+        // Format the query string using the provided language, date, and pagination parameters
         String query = format(QUERY_TEMPLATE, language, formatDate(earliestCreationDate), page, perPage);
         String url = BASE_URL + query;
-        try{
+        try {
             log.info("Calling GitHub API: {}", url);
+
             ResponseEntity<GitHubSearchResponse> response = restTemplate.getForEntity(url, GitHubSearchResponse.class);
-            return  response.getBody();
+            return response.getBody();
         } catch (HttpStatusCodeException e) {
             switch (e.getStatusCode()) {
                 case UNPROCESSABLE_ENTITY -> throw new GithubException(UNPROCESSABLE_ENTITY, "Invalid query: " + query);
@@ -56,6 +76,12 @@ public class GitHubWebClient {
         }
     }
 
+    /**
+     * Formats an Instant into a date string in the format yyyy-MM-dd.
+     *
+     * @param date the Instant to format
+     * @return a formatted date string
+     */
     private String formatDate(Instant date) {
         return new SimpleDateFormat("yyyy-MM-dd").format(Date.from(date));
     }
