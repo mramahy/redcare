@@ -1,6 +1,7 @@
 # 🧪 Redcare GitHub Repository Scorer
 
-This project is a Spring Boot backend service designed to search GitHub repositories using the GitHub REST API and score them based on popularity and activity metrics.
+This project is a Spring Boot backend service designed to search GitHub repositories using the
+GitHub REST API and score them based on popularity and activity metrics.
 
 ---
 
@@ -8,20 +9,22 @@ This project is a Spring Boot backend service designed to search GitHub reposito
 
 - Develop a scoring algorithm that assigns a popularity score to each repository.
 - Factors contributing to the score:
-  - Number of stars
-  - Number of forks
-  - Recency of updates
+    - Number of stars
+    - Number of forks
+    - Recency of updates
 - the user should be able to configure the earliest created date and language of repositories.
-  
+
 ## What is this project about?
 
 The application exposes a REST API that:
+
 - Accepts a programming language and a minimum creation date
 - Queries GitHub repositories matching the criteria
 - Scores each repository based on stars, forks, and update recency
 - Returns a ranked list of repositories with their computed scores
 
 It's built with modern Spring Boot practices including:
+
 - Validation and exception handling
 - Layered architecture (Controller → Service → Client)
 - Unit and integration testing
@@ -40,11 +43,13 @@ To build and run the project, you need:
 ## Project Structure
 
 the project is divided into 3 main packages:
+
 - rest: Contains the REST controller, global exception handler, validators and model attribute.
 - service: Contains the service layer that handles scoring logic.
 - client: Contains the GitHub API client and response for repositories fetched from GitHub.
 
-Along with config, error and model packages that contains rest template configuration,  main models and our exception classes
+Along with config, error and model packages that contains rest template configuration, main models
+and our exception classes
 
 ## 🚀 How to Run the Project
 
@@ -76,11 +81,14 @@ Open terminal on project then:
 | `earliestCreationDate` | ISO Instant | ✅ Yes    | Repositories created after this date |
 | `page`                 | Integer     | ✅ Yes    | number of page                       |
 | `perPage`              | Integer     | ✅ Yes    | number of items per page             |
+
 **Example:**
 
-```GET``` GET http://localhost:8080/api/scored-search?language=java&earliestCreationDate=2020-03-01T00:00:00Z&page=2&perPage=10
+```GET```
+GET http://localhost:8080/api/scored-search?language=java&earliestCreationDate=2020-03-01T00:00:00Z&page=2&perPage=10
 
 **Response:**
+
 ```json
 [
   {
