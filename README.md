@@ -85,7 +85,7 @@ Open terminal on project then:
 **Example:**
 
 ```GET```
-GET http://localhost:8080/api/scored-search?language=java&earliestCreationDate=2020-03-01T00:00:00Z&page=2&perPage=10
+ http://localhost:8080/api/scored-search?language=java&earliestCreationDate=2020-03-01T00:00:00Z&page=2&perPage=10
 
 **Response:**
 
